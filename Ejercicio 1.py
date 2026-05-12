@@ -1,7 +1,9 @@
 import datetime
 from abc import ABC, abstractmethod
 
+# ==========================================
 # GESTIÓN DE ERRORES ESPECÍFICOS
+# ==========================================
 class ErrorSistemaFJ(Exception):
     """Clase base para errores del sistema Software FJ"""
     pass
@@ -15,7 +17,9 @@ class ServicioNoDisponibleError(ErrorSistemaFJ):
 class ErrorFinanciero(ErrorSistemaFJ):
     pass
 
-# CLASE ABSTRACTA ENTIDAD
+# ==========================================
+# CLASES ABSTRACTAS (HERENCIA Y POLIMORFISMO)
+# ==========================================
 class EntidadSistema(ABC):
     def __init__(self):
         self.fecha_registro = datetime.datetime.now()
@@ -24,7 +28,6 @@ class EntidadSistema(ABC):
     def mostrar_detalle(self):
         pass
 
-# CLASE ABSTRACTA SERVICIO
 class Servicio(EntidadSistema, ABC):
     def __init__(self, nombre, precio_base):
         super().__init__()
@@ -38,6 +41,9 @@ class Servicio(EntidadSistema, ABC):
     def aplicar_iva(self, base, iva=0.19):
         return base * (1 + iva)
 
+# ==========================================
+# CLASES DERIVADAS (SERVICIOS)
+# ==========================================
 class ReservaSala(Servicio):
     def calcular_costo(self, horas, descuento=0, aplicar_impuesto=False):
         if not isinstance(horas, (int, float)) or horas <= 0:
@@ -59,7 +65,7 @@ class AlquilerEquipos(Servicio):
         if not isinstance(dias, (int, float)) or dias <= 0:
             raise DatosInvalidosError(f"Días inválidos: {dias}")
         
-        recargo = 1.20 if incluye_seguro else 1.0 # Seguro del 20%
+        recargo = 1.20 if incluye_seguro else 1.0 
         return (self.precio_base * dias) * recargo
 
     def mostrar_detalle(self):
@@ -70,13 +76,15 @@ class AsesoriaEspecializada(Servicio):
         if not isinstance(sesiones, (int, float)) or sesiones <= 0:
             raise DatosInvalidosError(f"Cantidad de sesiones inválida: {sesiones}")
         
-        multiplicador = 0.90 if cupon_descuento else 1.0 # 10% de descuento con cupón
+        multiplicador = 0.90 if cupon_descuento else 1.0 
         return (self.precio_base * sesiones) * multiplicador
 
     def mostrar_detalle(self):
         return f"[ASESORÍA] {self.nombre} | Precio/Sesión: ${self.precio_base}"
 
-# CLASE CLIENTE
+# ==========================================
+# ENCAPSULAMIENTO Y VALIDACIONES
+# ==========================================
 class Cliente(EntidadSistema):
     def __init__(self, nombre, correo):
         super().__init__()
@@ -89,7 +97,7 @@ class Cliente(EntidadSistema):
     @nombre.setter
     def nombre(self, valor):
         if not valor or len(valor) < 3:
-            raise DatosInvalidosError("Nombre demasiado corto.")
+            raise DatosInvalidosError("El nombre debe tener al menos 3 caracteres.")
         self.__nombre = valor
 
     @property
@@ -97,19 +105,18 @@ class Cliente(EntidadSistema):
 
     @correo.setter
     def correo(self, valor):
-        if "@" not in valor:
-            raise DatosInvalidosError(f"Email '{valor}' no tiene formato válido.")
+        if "@" not in valor or "." not in valor:
+            raise DatosInvalidosError(f"El email '{valor}' no tiene un formato válido.")
         self.__correo = valor
 
     def mostrar_detalle(self):
-        return f"[CLIENTE] {self.nombre} | Registro: {self.fecha_registro.strftime('%Y-%m-%d')}"
+        return f"[CLIENTE] {self.nombre} | Correo: {self.correo}"
 
-# CLASE RESERVA
 class Reserva(EntidadSistema):
     def __init__(self, cliente, servicio, cantidad, **params):
         super().__init__()
         if not isinstance(cliente, Cliente) or not isinstance(servicio, Servicio):
-            raise DatosInvalidosError("Cliente o Servicio no válido para la reserva.")
+            raise DatosInvalidosError("Cliente o Servicio no válido.")
         
         self.cliente = cliente
         self.servicio = servicio
@@ -118,85 +125,113 @@ class Reserva(EntidadSistema):
         self.estado = "PENDIENTE"
 
     def procesar(self):
-        print(f"Procesando: {self.servicio.nombre} para el cliente {self.cliente.nombre}...")
         try:
             total = self.servicio.calcular_costo(self.cantidad, **self.params)
             self.estado = "COMPLETADA"
-            return f"Reserva exitosa. Total a pagar: ${total:,.2f}"
+            return f"Total a pagar: ${total:,.2f}"
         except (DatosInvalidosError, ErrorFinanciero) as e:
             self.estado = "FALLIDA"
             raise ErrorSistemaFJ(f"Error de negocio: {e}") from e
         except Exception as e:
             self.estado = "ERROR_CRITICO"
             raise ErrorSistemaFJ(f"Falla técnica: {e}") from e
-        finally:
-            print(f"Resultado de operación: {self.estado}")
 
     def mostrar_detalle(self):
-        return f"[RESERVA] {self.cliente.nombre} -> {self.servicio.nombre}"
+        return f"[RESERVA] {self.cliente.nombre} -> {self.servicio.nombre} ({self.estado})"
 
+# ==========================================
+# REGISTRO DE LOGS
+# ==========================================
 def registrar_log(mensaje, nivel="INFO"):
     try:
         with open("log_software_fj.txt", "a", encoding="utf-8") as f:
             ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             f.write(f"[{ts}] [{nivel}] {mensaje}\n")
     except Exception as e:
-        print(f"No se pudo escribir el log: {e}")
+        print(f"Error al escribir log: {e}")
 
-# EJECUCIÓN DEL SISTEMA
-def ejecutar_sistema():
-    print("="*60)
-    print("SOFTWARE FJ - GESTIÓN INTEGRAL (VERSIÓN PEDRO BARRETO)")
-    print("="*60)
-    
-    # 1. Crear Servicios
-    sala_reuniones = ReservaSala("Auditorio Central", 120000)
-    pc_gamer = AlquilerEquipos("PC Workstation Pro", 55000)
-    mentoria_python = AsesoriaEspecializada("Arquitectura de Software", 95000)
+# ==========================================
+# SIMULACIÓN AUTOMÁTICA (REQUISITO FASE 4)
+# ==========================================
+def ejecutar_simulacion():
+    print("\n--- INICIANDO 10 PRUEBAS AUTOMÁTICAS ---")
+    s1 = ReservaSala("Auditorio Central", 120000)
+    s2 = AlquilerEquipos("PC Workstation Pro", 55000)
+    c1 = Cliente("Pedro Luis Barreto", "pedro.barreto@usco.edu.co")
+    c2 = Cliente("Angelica Ortiz", "angelica.ortiz@mail.com")
 
-    # 2. Crear Clientes
-    try:
-        c1 = Cliente("Pedro Luis Barreto", "pedro.barreto@usco.edu.co")
-        c2 = Cliente("Angelica Ortiz", "angelica.ortiz@mail.com")
-    except ErrorSistemaFJ as e:
-        print(f"Error inicial: {e}")
-        return
-
-    # 3. 10 OPERACIONES SIMULADAS
     operaciones = [
-        lambda: Reserva(c1, sala_reuniones, 5, aplicar_impuesto=True).procesar(), # 1. Válido
-        lambda: Reserva(c1, sala_reuniones, 2, descuento=300000).procesar(),      # 2. Error Financiero
-        lambda: Reserva(c2, pc_gamer, 3, incluye_seguro=True).procesar(),         # 3. Válido
-        lambda: Reserva(c1, pc_gamer, -5).procesar(),                             # 4. Dato Inválido
-        lambda: Reserva(c2, mentoria_python, 4, cupon_descuento=True).procesar(), # 5. Válido
-        lambda: Reserva(c1, sala_reuniones, "muchas horas").procesar(),           # 6. Error Tipo Dato
-        lambda: Reserva(c2, pc_gamer, 1, incluye_seguro=False).procesar(),        # 7. Válido
-        lambda: Reserva(c1, mentoria_python, 1).procesar(),                       # 8. Válido
-        lambda: Cliente("P", "p@p.com"),                                          # 9. Nombre inválido
-        lambda: Cliente("Usuario Prueba", "correo_sin_arroba"),                   # 10. Email inválido
+        lambda: Reserva(c1, s1, 5, aplicar_impuesto=True).procesar(), 
+        lambda: Reserva(c1, s1, 2, descuento=300000).procesar(),      
+        lambda: Reserva(c2, s2, 3, incluye_seguro=True).procesar(),   
+        lambda: Reserva(c1, s2, -5).procesar(),                       
+        lambda: Reserva(c2, s1, "texto").procesar(),                  
+        lambda: Cliente("P", "p@p.com"),                              
+        lambda: Cliente("Usuario Prueba", "correo_sin_arroba"),       
+        lambda: Reserva(c1, s1, 8).procesar(),
+        lambda: Reserva(c2, s2, 2).procesar(),
+        lambda: Reserva(c1, s1, 1).procesar()
     ]
 
     for i, op in enumerate(operaciones, 1):
-        print(f"\n>>> EJECUTANDO PRUEBA #{i}")
         try:
             res = op()
             if res:
-                print(res)
-                registrar_log(f"Op {i} Exitosa: {res}")
-            else:
-                print("Operación completada sin retorno.")
+                print(f"Prueba {i} Exitosa: {res}")
+                registrar_log(f"Simulacion {i} Exitosa: {res}")
         except ErrorSistemaFJ as e:
-            msg = f"Excepción capturada: {e}"
-            print(msg)
-            registrar_log(msg, "ADVERTENCIA")
-        except Exception as e:
-            msg = f"Error no esperado: {e}"
-            print(msg)
-            registrar_log(msg, "CRÍTICO")
+            print(f"Prueba {i} - Excepción controlada: {e}")
+            registrar_log(f"Simulacion {i} - Advertencia: {e}", "ADVERTENCIA")
+    print("--- SIMULACIÓN FINALIZADA ---\n")
 
-    print("\n" + "="*60)
-    print("PROCESO FINALIZADO. REVISE EL ARCHIVO 'log_software_fj.txt'")
-    print("="*60)
+# ==========================================
+# MENÚ DE INTERFAZ DE USUARIO (PETICIÓN TUTOR)
+# ==========================================
+def menu_principal():
+    clientes_registrados = []
+    servicios_disponibles = [
+        ReservaSala("Sala VIP", 150000),
+        AlquilerEquipos("Laptop 5ta Gen", 45000),
+        AsesoriaEspecializada("Sistemas Operativos", 80000)
+    ]
+
+    while True:
+        print("\n" + "="*50)
+        print("🏢 MENÚ INTERACTIVO SOFTWARE FJ 🏢")
+        print("1. Registrar nuevo Cliente")
+        print("2. Mostrar Servicios Disponibles")
+        print("3. Ejecutar 10 Simulaciones Automáticas (Prueba Fase 4)")
+        print("4. Salir")
+        print("="*50)
+        
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            print("\n--- REGISTRO DE CLIENTE ---")
+            nombre = input("Ingrese el nombre del cliente: ")
+            correo = input("Ingrese el correo del cliente: ")
+            try:
+                nuevo_cliente = Cliente(nombre, correo)
+                clientes_registrados.append(nuevo_cliente)
+                print("✅ Cliente registrado exitosamente.")
+                registrar_log(f"Cliente creado via Menú: {nombre}")
+            except ErrorSistemaFJ as e:
+                print(f"❌ Error al crear cliente: {e}")
+                registrar_log(f"Error creando cliente via Menú: {e}", "ERROR")
+
+        elif opcion == "2":
+            print("\n--- SERVICIOS DISPONIBLES ---")
+            for i, serv in enumerate(servicios_disponibles, 1):
+                print(f"{i}. {serv.mostrar_detalle()}")
+
+        elif opcion == "3":
+            ejecutar_simulacion()
+
+        elif opcion == "4":
+            print("Saliendo del sistema... ¡Hasta pronto!")
+            break
+        else:
+            print("Opción no válida. Intente de nuevo.")
 
 if __name__ == "__main__":
-    ejecutar_sistema()
+    menu_principal()
