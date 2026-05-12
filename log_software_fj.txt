@@ -18,3 +18,14 @@
 [2026-05-11 19:17:15] [INFO] Op 8 Exitosa: Reserva exitosa. Total a pagar: $95,000.00
 [2026-05-11 19:17:15] [ADVERTENCIA] Excepción capturada: Nombre demasiado corto.
 [2026-05-11 19:17:15] [ADVERTENCIA] Excepción capturada: Email 'correo_sin_arroba' no tiene formato válido.
+[2026-05-11 19:43:19] [INFO] Cliente creado via Menú: angelica.ortiz@gmail.com
+[2026-05-11 19:43:40] [INFO] Simulacion 1 Exitosa: Total a pagar: $714,000.00
+[2026-05-11 19:43:40] [ADVERTENCIA] Simulacion 2 - Advertencia: Error de negocio: El descuento no puede superar el costo total.
+[2026-05-11 19:43:40] [INFO] Simulacion 3 Exitosa: Total a pagar: $198,000.00
+[2026-05-11 19:43:40] [ADVERTENCIA] Simulacion 4 - Advertencia: Error de negocio: Días inválidos: -5
+[2026-05-11 19:43:40] [ADVERTENCIA] Simulacion 5 - Advertencia: Error de negocio: Horas inválidas: texto
+[2026-05-11 19:43:40] [ADVERTENCIA] Simulacion 6 - Advertencia: El nombre debe tener al menos 3 caracteres.
+[2026-05-11 19:43:40] [ADVERTENCIA] Simulacion 7 - Advertencia: El email 'correo_sin_arroba' no tiene un formato válido.
+[2026-05-11 19:43:40] [INFO] Simulacion 8 Exitosa: Total a pagar: $960,000.00
+[2026-05-11 19:43:40] [INFO] Simulacion 9 Exitosa: Total a pagar: $110,000.00
+[2026-05-11 19:43:40] [INFO] Simulacion 10 Exitosa: Total a pagar: $120,000.00
