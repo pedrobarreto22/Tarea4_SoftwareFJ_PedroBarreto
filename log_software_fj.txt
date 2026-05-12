@@ -8,3 +8,13 @@
 [2026-05-08 21:47:04] [INFO] Op 8 Exitosa: Reserva exitosa. Total a pagar: $95,000.00
 [2026-05-08 21:47:04] [ADVERTENCIA] Excepción capturada: Nombre demasiado corto.
 [2026-05-08 21:47:04] [ADVERTENCIA] Excepción capturada: Email 'correo_sin_arroba' no tiene formato válido.
+[2026-05-11 19:17:15] [INFO] Op 1 Exitosa: Reserva exitosa. Total a pagar: $714,000.00
+[2026-05-11 19:17:15] [ADVERTENCIA] Excepción capturada: Error de negocio: El descuento no puede superar el costo total.
+[2026-05-11 19:17:15] [INFO] Op 3 Exitosa: Reserva exitosa. Total a pagar: $198,000.00
+[2026-05-11 19:17:15] [ADVERTENCIA] Excepción capturada: Error de negocio: Días inválidos: -5
+[2026-05-11 19:17:15] [INFO] Op 5 Exitosa: Reserva exitosa. Total a pagar: $342,000.00
+[2026-05-11 19:17:15] [ADVERTENCIA] Excepción capturada: Error de negocio: Horas inválidas: muchas horas
+[2026-05-11 19:17:15] [INFO] Op 7 Exitosa: Reserva exitosa. Total a pagar: $55,000.00
+[2026-05-11 19:17:15] [INFO] Op 8 Exitosa: Reserva exitosa. Total a pagar: $95,000.00
+[2026-05-11 19:17:15] [ADVERTENCIA] Excepción capturada: Nombre demasiado corto.
+[2026-05-11 19:17:15] [ADVERTENCIA] Excepción capturada: Email 'correo_sin_arroba' no tiene formato válido.
